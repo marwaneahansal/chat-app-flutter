@@ -28,6 +28,9 @@ class _SignInState extends State<SignIn> {
                 decoration: textFieldInputDecorator('Email'),
                 style: textStyleField(),
               ),
+              SizedBox(
+                height: 8,
+              ),
               TextField(
                 decoration: textFieldInputDecorator('Password'),
                 style: textStyleField(),

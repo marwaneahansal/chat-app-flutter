@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "452125187379",
+    "firebase_url": "https://flutterchatapp-ab83b.firebaseio.com",
+    "project_id": "flutterchatapp-ab83b",
+    "storage_bucket": "flutterchatapp-ab83b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:452125187379:android:fdb00f9ce1fb5b7d50f246",
+        "android_client_info": {
+          "package_name": "com.marwaneahansal.chat_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "452125187379-d4udikkliheor9m2lq8bsf00ktvp1ttq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAOaxhcBjNfANB8hfSy0gtfgwYlTDKncT8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "452125187379-d4udikkliheor9m2lq8bsf00ktvp1ttq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
