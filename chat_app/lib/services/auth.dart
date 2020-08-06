@@ -24,7 +24,7 @@ class AuthMethods {
   Future signUp(String email, String password) async {
     try {
       AuthResult result = await _auth.createUserWithEmailAndPassword(
-          email: email, password: password);
+          email: email.trim(), password: password.trim());
 
       FirebaseUser user = result.user;
       return this._user(user);

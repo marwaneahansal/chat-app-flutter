@@ -1,8 +1,13 @@
 import 'package:chat_app/Widgets/widgets.dart';
 import 'package:chat_app/services/auth.dart';
+import 'package:chat_app/services/db.dart';
 import 'package:flutter/material.dart';
 
+import 'Conversation.dart';
+
 class SignUp extends StatefulWidget {
+  final Function toggle;
+  SignUp(this.toggle);
   @override
   _SignUpState createState() => _SignUpState();
 }
@@ -10,6 +15,8 @@ class SignUp extends StatefulWidget {
 class _SignUpState extends State<SignUp> {
   bool loading = false;
   AuthMethods authMethods = new AuthMethods();
+  DbMethods dbMethods = new DbMethods();
+
   final formKey = GlobalKey<FormState>();
   TextEditingController emailController = new TextEditingController();
   TextEditingController passwordController = new TextEditingController();
@@ -21,8 +28,17 @@ class _SignUpState extends State<SignUp> {
       });
 
       authMethods
-          .signUp(emailController.text, passwordController.text)
-          .then((value) => print(value));
+          .signUp(emailController.text.trim(), passwordController.text.trim())
+          .then((value) {
+        if (value) {
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => Conversation()));
+        } else {
+          setState(() {
+            loading = false;
+          });
+        }
+      });
     }
   }
 
@@ -47,7 +63,7 @@ class _SignUpState extends State<SignUp> {
                       Container(
                         height: 230,
                         child: Image(
-                          image: AssetImage('assets/images/signIn_chat.png'),
+                          image: AssetImage('assets/images/signUp_chat.png'),
                         ),
                       ),
                       Form(
@@ -56,9 +72,10 @@ class _SignUpState extends State<SignUp> {
                           children: <Widget>[
                             TextFormField(
                               validator: (value) {
+                                String email = value.trim();
                                 return RegExp(
                                             r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                                        .hasMatch(value)
+                                        .hasMatch(email)
                                     ? null
                                     : "Valid email is required!";
                               },
@@ -88,7 +105,7 @@ class _SignUpState extends State<SignUp> {
                       ),
                       GestureDetector(
                         onTap: () {
-                          return this.signUpBtn();
+                          signUpBtn();
                         },
                         child: Container(
                           alignment: Alignment.center,
@@ -125,11 +142,19 @@ class _SignUpState extends State<SignUp> {
                               color: Colors.white54,
                             ),
                           ),
-                          Text(
-                            'sign in now',
-                            style: TextStyle(
-                              color: Colors.white54,
-                              decoration: TextDecoration.underline,
+                          GestureDetector(
+                            onTap: () {
+                              widget.toggle();
+                            },
+                            child: Container(
+                              padding: EdgeInsets.symmetric(vertical: 8),
+                              child: Text(
+                                'sign in now',
+                                style: TextStyle(
+                                  color: Colors.white54,
+                                  decoration: TextDecoration.underline,
+                                ),
+                              ),
                             ),
                           ),
                         ],
