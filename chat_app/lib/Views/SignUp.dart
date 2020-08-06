@@ -23,6 +23,13 @@ class _SignUpState extends State<SignUp> {
 
   signUpBtn() {
     if (formKey.currentState.validate()) {
+      List<String> username = emailController.text.split("@");
+
+      Map<String, String> userInfo = {
+        'email': emailController.text.trim(),
+        'username': username[0]
+      };
+
       setState(() {
         loading = true;
       });
@@ -30,7 +37,8 @@ class _SignUpState extends State<SignUp> {
       authMethods
           .signUp(emailController.text.trim(), passwordController.text.trim())
           .then((value) {
-        if (value) {
+        if (value != null) {
+          dbMethods.uploadUserInfo(userInfo);
           Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (context) => Conversation()));
         } else {
