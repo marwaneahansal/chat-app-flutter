@@ -1,12 +1,34 @@
+import 'package:chat_app/Views/Conversation.dart';
 import 'package:chat_app/helper/authenticate.dart';
+import 'package:chat_app/helper/dataFunctions.dart';
 import 'package:flutter/material.dart';
 
 void main() {
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   // This widget is the root of your application.
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  bool isAuth;
+  @override
+  void initState() {
+    getLoggedInstate();
+    super.initState();
+  }
+
+  getLoggedInstate() async {
+    await DataFunctions().getUserAuth().then((value) {
+      setState(() {
+        isAuth = value;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -28,7 +50,9 @@ class MyApp extends StatelessWidget {
         // closer together (more dense) than on mobile platforms.
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: Authenticate(),
+      home: isAuth != null
+          ? isAuth ? Conversation() : Authenticate()
+          : Authenticate(),
     );
   }
 }

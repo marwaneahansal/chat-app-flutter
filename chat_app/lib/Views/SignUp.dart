@@ -1,4 +1,5 @@
 import 'package:chat_app/Widgets/widgets.dart';
+import 'package:chat_app/helper/dataFunctions.dart';
 import 'package:chat_app/services/auth.dart';
 import 'package:chat_app/services/db.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +17,7 @@ class _SignUpState extends State<SignUp> {
   bool loading = false;
   AuthMethods authMethods = new AuthMethods();
   DbMethods dbMethods = new DbMethods();
+  DataFunctions dataFunctions = new DataFunctions();
 
   final formKey = GlobalKey<FormState>();
   TextEditingController emailController = new TextEditingController();
@@ -30,6 +32,9 @@ class _SignUpState extends State<SignUp> {
         'username': username[0]
       };
 
+      dataFunctions.saveEmail(userInfo['email']);
+      dataFunctions.saveUsername(userInfo['username']);
+
       setState(() {
         loading = true;
       });
@@ -39,6 +44,7 @@ class _SignUpState extends State<SignUp> {
           .then((value) {
         if (value != null) {
           dbMethods.uploadUserInfo(userInfo);
+          dataFunctions.saveUserAuth(true);
           Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (context) => Conversation()));
         } else {

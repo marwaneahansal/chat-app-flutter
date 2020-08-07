@@ -1,6 +1,9 @@
 import 'package:chat_app/Views/Conversation.dart';
 import 'package:chat_app/Widgets/widgets.dart';
+import 'package:chat_app/helper/dataFunctions.dart';
 import 'package:chat_app/services/auth.dart';
+import 'package:chat_app/services/db.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class SignIn extends StatefulWidget {
@@ -12,8 +15,11 @@ class SignIn extends StatefulWidget {
 
 class _SignInState extends State<SignIn> {
   bool loading = false;
+  QuerySnapshot userInfo;
   String errorText = "";
   AuthMethods authMethods = new AuthMethods();
+  DbMethods dbMethods = new DbMethods();
+  DataFunctions dataFunctions = new DataFunctions();
 
   final formKey = GlobalKey<FormState>();
   TextEditingController emailController = new TextEditingController();
@@ -21,6 +27,13 @@ class _SignInState extends State<SignIn> {
 
   signInBtn() {
     if (formKey.currentState.validate()) {
+      dataFunctions.saveEmail(emailController.text.trim());
+
+      dbMethods.getUserByEmail(emailController.text.trim()).then((user) {
+        userInfo = user;
+        dataFunctions.saveUsername(userInfo.documents[0].data['username']);
+      });
+
       setState(() {
         loading = true;
       });

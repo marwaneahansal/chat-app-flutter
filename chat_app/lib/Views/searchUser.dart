@@ -1,4 +1,7 @@
+import 'package:chat_app/Views/ChatRoom.dart';
 import 'package:chat_app/Widgets/widgets.dart';
+import 'package:chat_app/helper/dataFunctions.dart';
+import 'package:chat_app/helper/userData.dart';
 import 'package:chat_app/services/db.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +14,7 @@ class Search extends StatefulWidget {
 class _SearchState extends State<Search> {
   TextEditingController usernameSearch = new TextEditingController();
   DbMethods dbMethods = new DbMethods();
+  DataFunctions dataFunctions = new DataFunctions();
   QuerySnapshot userSearch;
 
   getUsers() {
@@ -33,6 +37,27 @@ class _SearchState extends State<Search> {
               );
             })
         : Container();
+  }
+
+  startConversation(String username) {
+    List<String> chatUsers = [username, UserData.myUsername];
+    Map<String, dynamic> conversation = {
+      "users": chatUsers,
+      "conversationId": getConversationId(username, UserData.myUsername)
+    };
+
+    dbMethods.createConversation(conversation);
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => ChatRoom()));
+  }
+
+  getConversationId(String userOne, String userTwo) {
+    if (userOne.substring(0, 1).codeUnitAt(0) >
+        userTwo.substring(0, 1).codeUnitAt(0)) {
+      return "$userTwo\_$userOne";
+    } else {
+      return "$userOne\_$userTwo";
+    }
   }
 
   @override
@@ -118,15 +143,20 @@ class UserSearchLabel extends StatelessWidget {
             ],
           ),
           Spacer(),
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.blue,
-              borderRadius: BorderRadius.circular(30),
-            ),
-            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Text(
-              'Message',
-              style: TextStyle(color: Colors.white, fontSize: 18),
+          GestureDetector(
+            onTap: () {
+              _SearchState().startConversation(username);
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.blue,
+                borderRadius: BorderRadius.circular(30),
+              ),
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: Text(
+                'Message',
+                style: TextStyle(color: Colors.white, fontSize: 18),
+              ),
             ),
           ),
         ],

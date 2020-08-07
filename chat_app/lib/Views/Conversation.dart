@@ -1,4 +1,6 @@
 import 'package:chat_app/helper/authenticate.dart';
+import 'package:chat_app/helper/dataFunctions.dart';
+import 'package:chat_app/helper/userData.dart';
 import 'package:chat_app/services/auth.dart';
 import 'package:chat_app/Views/searchUser.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +12,17 @@ class Conversation extends StatefulWidget {
 
 class _ConversationState extends State<Conversation> {
   AuthMethods authMethods = new AuthMethods();
+  DataFunctions dataFunctions = new DataFunctions();
+  @override
+  void initState() {
+    getUserInfo();
+    super.initState();
+  }
+
+  getUserInfo() async {
+    UserData.myUsername = await dataFunctions.getUsername();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
