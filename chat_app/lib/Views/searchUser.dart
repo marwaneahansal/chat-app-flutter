@@ -39,7 +39,7 @@ class _SearchState extends State<Search> {
         : Container();
   }
 
-  startConversation(String username) {
+  startConversation(BuildContext context, String username) {
     List<String> chatUsers = [username, UserData.myUsername];
     Map<String, dynamic> conversation = {
       "users": chatUsers,
@@ -145,7 +145,7 @@ class UserSearchLabel extends StatelessWidget {
           Spacer(),
           GestureDetector(
             onTap: () {
-              _SearchState().startConversation(username);
+              _SearchState().startConversation(context, username);
             },
             child: Container(
               decoration: BoxDecoration(
