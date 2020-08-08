@@ -47,8 +47,8 @@ class _SearchState extends State<Search> {
     };
 
     dbMethods.createConversation(conversation);
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => ChatRoom()));
+    Navigator.push(context,
+        MaterialPageRoute(builder: (context) => ChatRoom(conversation[1])));
   }
 
   getConversationId(String userOne, String userTwo) {

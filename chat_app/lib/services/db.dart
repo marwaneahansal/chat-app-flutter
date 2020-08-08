@@ -22,4 +22,17 @@ class DbMethods {
   createConversation(chatUsers) {
     Firestore.instance.collection("Conversation").document().setData(chatUsers);
   }
+
+  getConversationMessages(String conversationId, messages) {
+    Query myCollection = Firestore.instance
+        .collection('Conversation')
+        .where("conversationId", isEqualTo: conversationId);
+    Firestore.instance
+        .collection('Conversation')
+        .document()
+        .collection('chatMessages')
+        .add(messages);
+    // .collection("chatMessages")
+    // .add(messages);
+  }
 }

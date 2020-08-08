@@ -1,12 +1,34 @@
 import 'package:chat_app/Widgets/widgets.dart';
+import 'package:chat_app/helper/userData.dart';
+import 'package:chat_app/services/db.dart';
 import 'package:flutter/material.dart';
 
 class ChatRoom extends StatefulWidget {
+  final String conversationId;
+
+  ChatRoom(this.conversationId);
   @override
   _ChatRoomState createState() => _ChatRoomState();
 }
 
 class _ChatRoomState extends State<ChatRoom> {
+  TextEditingController newMessage = new TextEditingController();
+  DbMethods dbMethods = new DbMethods();
+
+  Widget messageList() {
+    //return
+  }
+
+  void sendMessage() {
+    if (newMessage.text.isNotEmpty) {
+      Map<String, String> messages = {
+        "message": newMessage.text,
+        "sendBy": UserData.myUsername
+      };
+      dbMethods.getConversationMessages(widget.conversationId, messages);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,7 +45,7 @@ class _ChatRoomState extends State<ChatRoom> {
                   children: <Widget>[
                     Expanded(
                         child: TextField(
-                      // controller: usernameSearch,
+                      controller: newMessage,
                       style: TextStyle(color: Colors.white),
                       decoration: InputDecoration(
                         border: InputBorder.none,
@@ -35,7 +57,7 @@ class _ChatRoomState extends State<ChatRoom> {
                     )),
                     GestureDetector(
                       onTap: () {
-                        // getUsers();
+                        sendMessage();
                       },
                       child: Container(
                         height: 40,
