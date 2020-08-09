@@ -23,16 +23,39 @@ class DbMethods {
     Firestore.instance.collection("Conversation").document().setData(chatUsers);
   }
 
-  getConversationMessages(String conversationId, messages) {
-    Query myCollection = Firestore.instance
+  addConversationMessages(String conversationId, messages) async {
+    QuerySnapshot myCollection = await Firestore.instance
         .collection('Conversation')
-        .where("conversationId", isEqualTo: conversationId);
-    Firestore.instance
-        .collection('Conversation')
-        .document()
-        .collection('chatMessages')
-        .add(messages);
+        .where("conversationId", isEqualTo: conversationId)
+        .getDocuments();
+    // Firestore.instance
+    //     .collection(myCollection)
+    //     .document()
+    //     .collection('chatMessages')
+    //     .add(messages);
     // .collection("chatMessages")
     // .add(messages);
+    String documentId = myCollection.documents[0].documentID;
+    Firestore.instance
+        .collection('Conversation')
+        .document(documentId)
+        .collection('chatMessages')
+        .add(messages)
+        .catchError((err) => print("Chat messages errro: ${err.toString()}"));
+  }
+
+  getConversationMessages(String conversationId) async {
+    QuerySnapshot myCollection = await Firestore.instance
+        .collection('Conversation')
+        .where("conversationId", isEqualTo: conversationId)
+        .getDocuments();
+
+    String documentId = myCollection.documents[0].documentID;
+    return Firestore.instance
+        .collection('Conversation')
+        .document(documentId)
+        .collection('chatMessages')
+        .orderBy("createdAt", descending: false)
+        .snapshots();
   }
 }

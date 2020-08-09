@@ -14,19 +14,53 @@ class ChatRoom extends StatefulWidget {
 class _ChatRoomState extends State<ChatRoom> {
   TextEditingController newMessage = new TextEditingController();
   DbMethods dbMethods = new DbMethods();
+  Stream chatMessages;
+  bool loading = false;
 
   Widget messageList() {
-    //return
+    return StreamBuilder(
+      stream: chatMessages,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return ListView.builder(
+            itemCount: snapshot.data.documents.length,
+            itemBuilder: (context, index) {
+              return Message(
+                  snapshot.data.documents[index].data["message"],
+                  snapshot.data.documents[index].data["sentBy"] ==
+                      UserData.myUsername);
+            },
+          );
+        } else
+          return Center(
+            child: Container(
+              child: CircularProgressIndicator(),
+            ),
+          );
+      },
+    );
   }
 
   void sendMessage() {
     if (newMessage.text.isNotEmpty) {
-      Map<String, String> messages = {
+      Map<String, dynamic> messages = {
         "message": newMessage.text,
-        "sendBy": UserData.myUsername
+        "sendBy": UserData.myUsername,
+        "createdAt": DateTime.now(),
       };
-      dbMethods.getConversationMessages(widget.conversationId, messages);
+      dbMethods.addConversationMessages(widget.conversationId, messages);
+      newMessage.text = "";
     }
+  }
+
+  @override
+  void initState() {
+    dbMethods.getConversationMessages(widget.conversationId).then((value) {
+      setState(() {
+        chatMessages = value;
+      });
+    });
+    super.initState();
   }
 
   @override
@@ -36,6 +70,7 @@ class _ChatRoomState extends State<ChatRoom> {
       body: Container(
         child: Stack(
           children: <Widget>[
+            messageList(),
             Container(
               alignment: Alignment.bottomCenter,
               child: Container(
@@ -83,6 +118,47 @@ class _ChatRoomState extends State<ChatRoom> {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class Message extends StatelessWidget {
+  final String message;
+  final bool isSentByMe;
+  Message(this.message, this.isSentByMe);
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      alignment: isSentByMe ? Alignment.centerRight : Alignment.centerLeft,
+      child: Container(
+        margin: EdgeInsets.all(8),
+        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: isSentByMe
+                ? [const Color(0x1AFFFFFF), const Color(0x1AFFFFFF)]
+                : [const Color(0xff007EF4), const Color(0xff2A75BC)],
+          ),
+          borderRadius: isSentByMe
+              ? BorderRadius.only(
+                  topLeft: Radius.circular(20),
+                  topRight: Radius.circular(20),
+                  bottomLeft: Radius.circular(20),
+                )
+              : BorderRadius.only(
+                  topLeft: Radius.circular(20),
+                  topRight: Radius.circular(20),
+                  bottomLeft: Radius.circular(20),
+                ),
+        ),
+        child: Text(
+          message,
+          style: TextStyle(
+            color: Colors.white,
+          ),
         ),
       ),
     );
