@@ -58,4 +58,11 @@ class DbMethods {
         .orderBy("createdAt", descending: false)
         .snapshots();
   }
+
+  getAllCoversation(String username) async {
+    return await Firestore.instance
+        .collection('Conversation')
+        .where("users", arrayContains: username)
+        .snapshots();
+  }
 }

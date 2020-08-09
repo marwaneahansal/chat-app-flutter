@@ -27,7 +27,7 @@ class _ChatRoomState extends State<ChatRoom> {
             itemBuilder: (context, index) {
               return Message(
                   snapshot.data.documents[index].data["message"],
-                  snapshot.data.documents[index].data["sentBy"] ==
+                  snapshot.data.documents[index].data["sendBy"] ==
                       UserData.myUsername);
             },
           );
@@ -139,8 +139,8 @@ class Message extends StatelessWidget {
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: isSentByMe
-                ? [const Color(0x1AFFFFFF), const Color(0x1AFFFFFF)]
-                : [const Color(0xff007EF4), const Color(0xff2A75BC)],
+                ? [const Color(0xff007EF4), const Color(0xff2A75BC)]
+                : [const Color(0x1AFFFFFF), const Color(0x1AFFFFFF)],
           ),
           borderRadius: isSentByMe
               ? BorderRadius.only(
@@ -151,7 +151,7 @@ class Message extends StatelessWidget {
               : BorderRadius.only(
                   topLeft: Radius.circular(20),
                   topRight: Radius.circular(20),
-                  bottomLeft: Radius.circular(20),
+                  bottomRight: Radius.circular(20),
                 ),
         ),
         child: Text(
